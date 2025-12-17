@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pass2.Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+<body>
+    <div class="div-center">
+        <div class="content">
+            <h3>Pass2.Login</h3>
+            <hr/>
+            <form method="POST" action="/login">
+                <div class="form-group mb-3">
+                    <label for="usernameInput">Username <span id="usernameCheckMsg"></span></label>
+                    <input type="text" class="form-control" id="usernameInput" name="username" placeholder="j.pinkman">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="passwordInput">Password</label>
+                    <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Password1!">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <div class="mt-2 errMsg" th:text="${e}"/>
+                <hr/>
+                <a href="#">Create Account</a> | <a href="/reset-password">Reset Password</a>
+            </form>
+        </div>
+    </div>
+    <script>
+        const usernameInput = document.getElementById("usernameInput");
+        const usernameCheckMsg = document.getElementById("usernameCheckMsg");
+
+        usernameInput.addEventListener("focusout", (event) => {
+           let http = new XMLHttpRequest();
+           let url = "api/v1/check-user?u=" + encodeURIComponent(usernameInput.value);
+           http.onload = (e) => {
+               let j = JSON.parse(http.responseText);
+               if (j['exists']) {
+                   usernameCheckMsg.innerHTML = "OK";
+                   usernameCheckMsg.style.color = "green";
+               } else {
+                   usernameCheckMsg.innerHTML = "Username not found!";
+                   usernameCheckMsg.style.color = "red";
+               }
+           };
+           http.open("GET", url, true);
+           http.send();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</body>
+</html>
